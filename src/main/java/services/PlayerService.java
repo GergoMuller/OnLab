@@ -11,11 +11,11 @@ import repositories.PlayerRepository;
 @LocalBean
 public class PlayerService {
 	
-//	@Inject
-//	PlayerRepository repo;
+	@Inject
+	PlayerRepository repo;
 	
 	public void createPlayer(Player player){
-		//repo.save(player);
+		repo.save(player);
 	}
 
 }
