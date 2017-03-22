@@ -1,10 +1,19 @@
 package entities;
 
+import java.io.ByteArrayInputStream;
+import java.time.temporal.ChronoUnit;
 import java.io.Serializable;
 import java.text.MessageFormat;
+import java.time.LocalDate;
+import java.time.Year;
 import java.util.List;
 
 import javax.persistence.*;
+
+import org.omg.DynamicAny.DynAnySeqHelper;
+import org.primefaces.model.DefaultStreamedContent;
+
+import utilities.PlayerPosition;
 
 
 @Entity
@@ -16,10 +25,12 @@ public class Player extends User implements Serializable {
 	
 	private String description;
 	private int age;
+	@Lob
+	private byte[] picture;
 	@Enumerated(EnumType.STRING)
 	private PlayerPosition position;
-	@OneToOne(orphanRemoval=true, mappedBy="signedPlayer")
-	private Contract contract;
+	@OneToMany(orphanRemoval=true, mappedBy="signedPlayer")
+	private List<Contract> contract;
 	
 	@ManyToOne
 	@JoinColumn(name="Current_Team")
@@ -31,10 +42,17 @@ public class Player extends User implements Serializable {
 	
 	
 	
-	@Override
-	public String toString(){
-		MessageFormat mf = new MessageFormat("Name: {0}, Email: {1}" );
-		return mf.format(name, email );
+	public DefaultStreamedContent streamPicture(){
+		if(picture == null)
+			return null;
+		return new DefaultStreamedContent(new ByteArrayInputStream(picture));
+	}
+	
+	public byte[] getPicture() {
+		return picture;
+	}
+	public void setPicture(byte[] picture) {
+		this.picture = picture;
 	}
 	public int getAge() {
 		return age;
@@ -47,12 +65,6 @@ public class Player extends User implements Serializable {
 	}
 	public void setPosition(PlayerPosition position) {
 		this.position = position;
-	}
-	public Contract getContract() {
-		return contract;
-	}
-	public void setContract(Contract contract) {
-		this.contract = contract;
 	}
 	public String getDescription() {
 		return description;
@@ -72,9 +84,14 @@ public class Player extends User implements Serializable {
 	public void setCurrentTeam(Team currentTeam) {
 		this.currentTeam = currentTeam;
 	}
-	
-	
-	
+
+	public List<Contract> getContract() {
+		return contract;
+	}
+
+	public void setContract(List<Contract> contract) {
+		this.contract = contract;
+	}	
 	
    
 }
